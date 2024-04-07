@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Styles/Global.uss?fileID=7433441132597879392&amp;guid=630095698b1a1a14c98dcd4ad4b588e8&amp;type=3#Global" />
+    <Style src="project://database/Assets/UI/Styles/Menu.uss?fileID=7433441132597879392&amp;guid=8bdf9bb80f12bf74bb9bafdbf0624a55&amp;type=3#Menu" />
+    <ui:VisualElement class="games-list" style="flex-grow: 1;">
+        <ui:Button text="STOCK STAKER" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stock" class="game-btn" />
+        <ui:Button text="BUDGET BALANCER" parse-escape-sequences="true" display-tooltip-when-elided="true" name="budget" class="game-btn" />
+        <ui:Button text="GAMBLING GURU" parse-escape-sequences="true" display-tooltip-when-elided="true" name="gambling" class="game-btn" />
+        <ui:Button text="BETTER BETTING" parse-escape-sequences="true" display-tooltip-when-elided="true" name="betting" class="game-btn" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.background {
+    background-color: #1b1d1d;
+    padding: 48px;
+    width: 100%;
+    height: 100%;
+}
+
+StockElement {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
