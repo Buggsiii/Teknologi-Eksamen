@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using System.Collections;
 
 public class StockManager : MonoBehaviour
 {
@@ -21,23 +22,12 @@ public class StockManager : MonoBehaviour
             if (balance != value)
             {
                 balance = value;
-                ui.rootVisualElement.Q<Label>("balance").text = $"${balance}";
+                ui.rootVisualElement.Q<Label>("balance").text = $"${balance:n0}";
             }
         }
     }
 
     private UIDocument ui;
-
-    private async void Start()
-    {
-        ui = FindObjectOfType<UIDocument>();
-        Balance = 1000;
-
-        DateTime from = DateTime.Now.Subtract(TimeSpan.FromDays(365 * 2));
-        DateTime to = from.AddMonths(2);
-        StockData data = await GetStockData("AAPL", from.ToString("yyyy-MM-dd"), to.ToString("yyyy-MM-dd"));
-        Debug.Log(data);
-    }
 
     private static readonly StockReference[] Stocks = new StockReference[]
     {
@@ -86,11 +76,29 @@ public class StockManager : MonoBehaviour
 
     private void Awake() => Instance = this;
 
+    private void Start()
+    {
+        ui = FindObjectOfType<UIDocument>();
+        Balance = 1000;
+        StartCoroutine(Animation());
+
+        // DateTime from = DateTime.Now.Subtract(TimeSpan.FromDays(365 * 2));
+        // DateTime to = from.AddMonths(2);
+        // StockData data = await GetStockData("AAPL", from.ToString("yyyy-MM-dd"), to.ToString("yyyy-MM-dd"));
+        // Debug.Log(data);
+    }
+
     public static async Task<StockData> GetRandomStockData()
     {
         StockReference stock = Stocks[UnityEngine.Random.Range(0, Stocks.Length)];
         StockData data = await GetStockData(stock.Symbol, stock.From, stock.To);
         return data;
+    }
+
+    public IEnumerator Animation()
+    {
+        yield return null;
+        ui.rootVisualElement.Q<StockElement>().RemoveFromClassList("offset");
     }
 
     /// <summary>

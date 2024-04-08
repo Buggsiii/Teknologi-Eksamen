@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -9,11 +11,11 @@ public class StockElement : VisualElement
 
     public StockElement()
     {
-        Initialize();
+        SetData();
         generateVisualContent += OnGenerateVisualContent;
     }
 
-    public async void Initialize()
+    public async void SetData()
     {
         data = await StockManager.GetRandomStockData();
         if (data == null) return;
@@ -25,25 +27,25 @@ public class StockElement : VisualElement
 
     private void OnGenerateVisualContent(MeshGenerationContext _context)
     {
-        if (data == null) return;
-
         float width = contentRect.width;
         float height = contentRect.height;
 
         var ctx = _context.painter2D;
 
         // Background
-        for (int i = 0; i < data.Stocks.Count + 1; i++)
+        int count = data == null ? 22 : data.Stocks.Count + 1;
+        for (int i = 0; i < count; i++)
         {
-            float x = i * width / (data.Stocks.Count + 1);
+            float x = i * width / count;
 
             ctx.fillColor = i % 2 == 0 ? new Color32(27, 29, 30, 255) : new Color32(24, 26, 27, 255);
             ctx.BeginPath();
-            int rectWidth = Mathf.CeilToInt(width / (data.Stocks.Count + 1)) + 1;
+            int rectWidth = Mathf.CeilToInt(width / count) + 1;
             ctx.Rect(new Rect(x, 0, rectWidth, height));
             ctx.Fill();
         }
 
+        if (data == null) return;
         // Draw the graph
         ctx.BeginPath();
         ctx.lineWidth = 4;
