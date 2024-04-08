@@ -1,6 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Styles/Global.uss?fileID=7433441132597879392&amp;guid=630095698b1a1a14c98dcd4ad4b588e8&amp;type=3#Global" />
-    <ui:VisualElement class="background">
-        <StockElement />
+    <Style src="project://database/Assets/UI/Styles/Stocks.uss?fileID=7433441132597879392&amp;guid=d4aab868e97832f4b96710133789c0af&amp;type=3#Stocks" />
+    <ui:VisualElement name="VisualElement" class="background stock-con">
+        <StockElement>
+            <ui:Label tabindex="-1" text="$10,000" parse-escape-sequences="true" display-tooltip-when-elided="true" name="balance" class="balance" />
+        </StockElement>
+        <ui:VisualElement name="VisualElement" class="btn-con">
+            <ui:Button text="Ignore" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-right: 16px; margin-left: 0;" />
+            <ui:Button text="Invest" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-right: 0;" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

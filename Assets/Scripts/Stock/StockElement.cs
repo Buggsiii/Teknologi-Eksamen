@@ -1,5 +1,3 @@
-using Unity.Mathematics;
-using Unity.Properties;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -17,7 +15,7 @@ public class StockElement : VisualElement
 
     public async void Initialize()
     {
-        data = await StockManager.GetStockData("NVDA", "2024-01-01", "2024-02-01");
+        data = await StockManager.GetRandomStockData();
         if (data == null) return;
         Debug.Log(data.ToString());
 
@@ -82,12 +80,5 @@ public class StockElement : VisualElement
             ctx.LineTo(new Vector2(x, barTop));
             ctx.Stroke();
         }
-
-        ctx.strokeColor = new Color32(70, 78, 86, 255);
-        ctx.lineWidth = 4;
-        ctx.BeginPath();
-        ctx.Rect(new Rect(0, 0, width, height));
-        ctx.ClosePath();
-        ctx.Stroke();
     }
 }

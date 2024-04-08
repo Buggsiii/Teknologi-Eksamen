@@ -1,14 +1,97 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
 
 public class StockManager : MonoBehaviour
 {
+    public static StockManager Instance;
     private const string API = "aMmCh_fZV_wzh53J6Hw_MWqN04oaRwH9";
+
+    private float balance;
+    public float Balance
+    {
+        get { return balance; }
+        set
+        {
+            if (balance != value)
+            {
+                balance = value;
+                ui.rootVisualElement.Q<Label>("balance").text = $"${balance}";
+            }
+        }
+    }
+
+    private UIDocument ui;
+
+    private async void Start()
+    {
+        ui = FindObjectOfType<UIDocument>();
+        Balance = 1000;
+
+        DateTime from = DateTime.Now.Subtract(TimeSpan.FromDays(365 * 2));
+        DateTime to = from.AddMonths(2);
+        StockData data = await GetStockData("AAPL", from.ToString("yyyy-MM-dd"), to.ToString("yyyy-MM-dd"));
+        Debug.Log(data);
+    }
+
+    private static readonly StockReference[] Stocks = new StockReference[]
+    {
+        new ("AAPL", "2023-01-01"),
+        new ("TSLA", "2023-01-01"),
+        new ("AMZN", "2023-01-01"),
+        new ("GOOG", "2023-01-01"),
+        new ("MSFT", "2023-01-01"),
+        new ("FB", "2023-01-01"),
+        new ("NVDA", "2023-01-01"),
+        new ("NFLX", "2023-01-01"),
+        new ("AMD", "2023-01-01"),
+    };
+
+    private class StockReference
+    {
+        public string Symbol;
+        public string From;
+        public string To;
+
+        public StockReference(string _symbol, string _from, string _to)
+        {
+            Symbol = _symbol;
+            From = _from;
+            To = _to;
+        }
+
+        public StockReference(string _symbol, string _from)
+        {
+            Symbol = _symbol;
+            From = _from;
+
+            // Add two months to the start date
+            DateTime date = DateTime.Parse(_from);
+            date = date.AddMonths(2);
+            To = date.ToString("yyyy-MM-dd");
+
+            // If the date is in the future, set it to today
+            if (date > DateTime.Now) To = DateTime.Now.ToString("yyyy-MM-dd");
+
+            Debug.Log(this);
+        }
+
+        public override string ToString() => $"{Symbol} from {From} to {To}";
+    }
+
+    private void Awake() => Instance = this;
+
+    public static async Task<StockData> GetRandomStockData()
+    {
+        StockReference stock = Stocks[UnityEngine.Random.Range(0, Stocks.Length)];
+        StockData data = await GetStockData(stock.Symbol, stock.From, stock.To);
+        return data;
+    }
 
     /// <summary>
     /// Get stock data from Polygon API.
@@ -28,6 +111,7 @@ public class StockManager : MonoBehaviour
     public static async Task<StockData> GetStockData(string _symbol, string _from, string _to)
     {
         string url = $"https://api.polygon.io/v2/aggs/ticker/{_symbol}/range/1/day/{_from}/{_to}?adjusted=true&sort=asc&limit=120&apiKey={API}";
+        Debug.Log(url);
         UnityWebRequest req = UnityWebRequest.Get(url);
         await req.SendWebRequest();
 
