@@ -47,5 +47,5 @@ Button:hover {
 }
 
 .offset {
-    translate: 250% 0;
+    translate: 150% 0;
 }

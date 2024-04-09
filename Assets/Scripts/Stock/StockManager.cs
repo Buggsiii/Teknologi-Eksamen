@@ -36,7 +36,6 @@ public class StockManager : MonoBehaviour
         new ("AMZN", "2023-01-01"),
         new ("GOOG", "2023-01-01"),
         new ("MSFT", "2023-01-01"),
-        new ("FB", "2023-01-01"),
         new ("NVDA", "2023-01-01"),
         new ("NFLX", "2023-01-01"),
         new ("AMD", "2023-01-01"),
@@ -67,8 +66,6 @@ public class StockManager : MonoBehaviour
 
             // If the date is in the future, set it to today
             if (date > DateTime.Now) To = DateTime.Now.ToString("yyyy-MM-dd");
-
-            Debug.Log(this);
         }
 
         public override string ToString() => $"{Symbol} from {From} to {To}";
@@ -147,10 +144,10 @@ public class StockManager : MonoBehaviour
         [JsonProperty("results")]
         public List<Stock> Stocks;
 
-        public float MaxHighest => Stocks.Max(stock => stock.Highest);
-        public float MinLowest => Stocks.Min(stock => stock.Lowest);
-        public DateTime StartDate => Stocks.Min(stock => stock.Date);
-        public DateTime EndDate => Stocks.Max(stock => stock.Date);
+        public float MaxHighest => Stocks != null ? Stocks.Max(stock => stock.Highest) : 0;
+        public float MinLowest => Stocks != null ? Stocks.Min(stock => stock.Lowest) : 0;
+        public DateTime StartDate => Stocks != null ? Stocks.Min(stock => stock.Date) : DateTime.Now.AddMonths(-2);
+        public DateTime EndDate => Stocks != null ? Stocks.Max(stock => stock.Date) : DateTime.Now;
 
         public static StockData CreateFromJSON(string _json)
             => JsonConvert.DeserializeObject<StockData>(_json);

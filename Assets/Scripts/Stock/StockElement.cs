@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,11 +10,18 @@ public class StockElement : VisualElement
 
     public StockElement()
     {
-        SetData();
+        Initialization();
         generateVisualContent += OnGenerateVisualContent;
     }
 
-    public async void SetData()
+    public async void Initialization()
+    {
+        if (!Application.isPlaying) return;
+        await SetData();
+        Animation();
+    }
+
+    public async Task SetData()
     {
         data = await StockManager.GetRandomStockData();
         if (data == null) return;
@@ -23,6 +29,22 @@ public class StockElement : VisualElement
 
         // Trigger a repaint
         MarkDirtyRepaint();
+    }
+
+    private int currentStock = 0;
+    private async void Animation()
+    {
+        int waitTime = 60000 / data.Stocks.Count;
+
+        Debug.Log($"Wait time: {waitTime}");
+        await Task.Delay(waitTime);
+
+        while (currentStock < data.Stocks.Count)
+        {
+            await Task.Delay(waitTime);
+            currentStock++;
+            MarkDirtyRepaint();
+        }
     }
 
     private void OnGenerateVisualContent(MeshGenerationContext _context)
@@ -67,8 +89,6 @@ public class StockElement : VisualElement
         {
             var stock = data.Stocks[i];
             float x = (i + 1) * width / (data.Stocks.Count + 1);
-            float y = height - ((stock.Close - data.MinLowest) / (data.MaxHighest - data.MinLowest) * height);
-            Vector2 center = new(x, y);
 
             float barTop = height - ((stock.Highest - data.MinLowest) / (data.MaxHighest - data.MinLowest) * height);
             float barBottom = height - ((stock.Lowest - data.MinLowest) / (data.MaxHighest - data.MinLowest) * height);
@@ -80,6 +100,19 @@ public class StockElement : VisualElement
             ctx.BeginPath();
             ctx.MoveTo(new Vector2(x, barBottom));
             ctx.LineTo(new Vector2(x, barTop));
+            ctx.Stroke();
+        }
+
+        // Draw horizontal line at current stock close price
+        if (currentStock < data.Stocks.Count)
+        {
+            var stock = data.Stocks[currentStock];
+            float y = height - ((stock.Close - data.MinLowest) / (data.MaxHighest - data.MinLowest) * height);
+            ctx.strokeColor = new Color32(255, 255, 255, 255);
+            ctx.lineWidth = 2;
+            ctx.BeginPath();
+            ctx.MoveTo(new Vector2(0, y));
+            ctx.LineTo(new Vector2(width, y));
             ctx.Stroke();
         }
     }
