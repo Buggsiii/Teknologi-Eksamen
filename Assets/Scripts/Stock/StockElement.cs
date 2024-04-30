@@ -47,6 +47,8 @@ public class StockElement : VisualElement
 
     public async Task SetData()
     {
+        while (StockManager.Instance == null)
+            await Task.Delay(100);
         Data = await StockManager.GetRandomStockData();
         if (Data == null) return;
         Debug.Log(Data.ToString());

@@ -18,11 +18,11 @@ Button {
     background-color: white;
     min-height: 84px;
     font-size: 32px;
-    -unity-font-style: bolder;
+    -unity-font-style: bold;
     transition: all 0.2s;
 }
 
 Button:focus {
-    border-width: 2px;
+    border-width: 4px;
     color: #fff;
 }

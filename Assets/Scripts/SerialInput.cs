@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
 using UnityEngine;
 
 public class SerialInput : MonoBehaviour
@@ -29,10 +30,15 @@ public class SerialInput : MonoBehaviour
         InputEvents[input]();
     }
 
-    private void OnApplicationQuit() => serialPort.Close();
+    private void OnApplicationQuit()
+    {
+        if (serialPort == null) return;
+        serialPort.Close();
+    }
 
     public static void Init()
     {
+        if (!SerialPort.GetPortNames().Contains("COM3")) return;
         serialPort = new SerialPort("COM3", 9600);
         serialPort.Open();
 
@@ -41,6 +47,7 @@ public class SerialInput : MonoBehaviour
 
     private static string ReadSerial()
     {
+        if (serialPort == null) return "";
         if (serialPort.BytesToRead == 0) return "";
         string input = serialPort.ReadLine().Trim();
         Debug.Log(input);

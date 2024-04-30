@@ -26,23 +26,12 @@ public class StockManager : MonoBehaviour
             if (balance != value)
             {
                 balance = value;
-                ui.rootVisualElement.Q<Label>("balance").text = $"${balance:n0}";
+                ui.rootVisualElement.Q<Label>("balance").text = $"{balance:n0}DKK";
             }
         }
     }
 
-
-    private static readonly StockReference[] Stocks = new StockReference[]
-    {
-        new ("AAPL", "2023-01-01"),
-        new ("TSLA", "2023-01-01"),
-        new ("AMZN", "2023-01-01"),
-        new ("GOOG", "2023-01-01"),
-        new ("MSFT", "2023-01-01"),
-        new ("NVDA", "2023-01-01"),
-        new ("NFLX", "2023-01-01"),
-        new ("AMD", "2023-01-01"),
-    };
+    public StockReference[] stocks;
 
     private void Awake() => Instance = this;
 
@@ -61,7 +50,10 @@ public class StockManager : MonoBehaviour
 
     public static async Task<StockData> GetRandomStockData()
     {
-        StockReference stock = Stocks[UnityEngine.Random.Range(0, Stocks.Length)];
+        Debug.Log("Getting random stock data");
+        Debug.Log(Instance);
+        StockReference[] enabledStocks = Instance.stocks.Where(stock => stock.enabled).ToArray();
+        StockReference stock = enabledStocks[UnityEngine.Random.Range(0, enabledStocks.Length)];
         StockData data = await GetStockData(stock.Symbol, stock.From, stock.To);
         return data;
     }
@@ -76,7 +68,8 @@ public class StockManager : MonoBehaviour
         while (stockElement.currentStock < stockElement.Data.Stocks.Count)
         {
             yield return new WaitForSeconds(stockElement.TotalTime / stockElement.Data.Stocks.Count / 1000f);
-            currentCost = stockElement.Data.Stocks[stockElement.currentStock].Close;
+            if (stockElement.currentStock < stockElement.Data.Stocks.Count - 1)
+                currentCost = stockElement.Data.Stocks[stockElement.currentStock + 1].Close * 6.98f;
             stockElement.currentStock++;
             stockElement.MarkDirtyRepaint();
         }
@@ -131,11 +124,13 @@ public class StockManager : MonoBehaviour
         return StockData.CreateFromJSON(json);
     }
 
-    private class StockReference
+    [Serializable]
+    public class StockReference
     {
         public string Symbol;
         public string From;
         public string To;
+        public bool enabled = true;
 
         public StockReference(string _symbol, string _from, string _to)
         {

@@ -4,10 +4,14 @@
 
 .game-btn {
     flex-grow: 1;
-    transition: all 0.5s ease-in-out;
     -unity-font-style: bold;
+    background-color: #fff;
     font-size: 24px;
-    border-width: 0;
+    border-color: #000000;
+    border-width: 1px;
+    border-radius: 0px;
+    overflow: hidden;
+    transition: all 0.5s ease-in-out;
 }
 
 .game-btn:hover {
