@@ -2,21 +2,27 @@ StockElement {
     width: 100%;
     height: 100%;
     translate: -150% 0;
+    transition: translate 60s;
 }
 
 Button {
     flex-grow: 1;
-    border-radius: 16px;
-    border-width: 0;
-    background-color: white;
-    min-height: 84px;
-    font-size: 24px;
-    -unity-font-style: bold;
-    transition: background-color 0.2s;
 }
 
-Button:hover {
-    background-color: rgb(240, 240, 240);
+.btn-left {
+    background-color: #BA2C31;
+}
+
+.btn-right {
+    background-color: #07834C
+}
+
+.btn-left:hover {
+    background-color: #D63B41;
+}
+
+.btn-right:hover {
+    background-color: #0A9A5B;
 }
 
 .stock-con {

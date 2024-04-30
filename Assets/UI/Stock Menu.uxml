@@ -3,12 +3,12 @@
     <Style src="project://database/Assets/UI/Styles/Stocks.uss?fileID=7433441132597879392&amp;guid=d4aab868e97832f4b96710133789c0af&amp;type=3#Stocks" />
     <ui:VisualElement name="VisualElement" class="background">
         <ui:VisualElement class="stock-con" style="flex-grow: 1;">
-            <StockElement class="offset" style="scale: 2 1; transition-duration: 60s; transition-property: translate; transition-timing-function: linear;" />
+            <StockElement Start-Wait-Time="0" Total-Time="39000" class="offset" style="scale: 2 1; transition-duration: 60s; transition-property: translate; transition-timing-function: linear;" />
             <ui:Label tabindex="-1" text="$10,000" parse-escape-sequences="true" display-tooltip-when-elided="true" name="balance" class="balance" />
         </ui:VisualElement>
         <ui:VisualElement name="VisualElement" class="btn-con">
-            <ui:Button text="Sell" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-right: 16px; margin-left: 0;" />
-            <ui:Button text="Invest" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-right: 0;" />
+            <ui:Button text="Sell" parse-escape-sequences="true" display-tooltip-when-elided="true" name="sell" class="btn-left" style="margin-right: 16px; margin-left: 0;" />
+            <ui:Button text="Invest" parse-escape-sequences="true" display-tooltip-when-elided="true" name="invest" class="btn-right" style="margin-right: 0;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

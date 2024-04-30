@@ -12,6 +12,10 @@ public class StockManager : MonoBehaviour
 {
     public static StockManager Instance;
     private const string API = "aMmCh_fZV_wzh53J6Hw_MWqN04oaRwH9";
+    private UIDocument ui;
+    StockElement stockElement;
+    private float currentCost;
+    private int boughtStocks = 0;
 
     private float balance;
     public float Balance
@@ -27,7 +31,6 @@ public class StockManager : MonoBehaviour
         }
     }
 
-    private UIDocument ui;
 
     private static readonly StockReference[] Stocks = new StockReference[]
     {
@@ -41,48 +44,19 @@ public class StockManager : MonoBehaviour
         new ("AMD", "2023-01-01"),
     };
 
-    private class StockReference
-    {
-        public string Symbol;
-        public string From;
-        public string To;
-
-        public StockReference(string _symbol, string _from, string _to)
-        {
-            Symbol = _symbol;
-            From = _from;
-            To = _to;
-        }
-
-        public StockReference(string _symbol, string _from)
-        {
-            Symbol = _symbol;
-            From = _from;
-
-            // Add two months to the start date
-            DateTime date = DateTime.Parse(_from);
-            date = date.AddMonths(2);
-            To = date.ToString("yyyy-MM-dd");
-
-            // If the date is in the future, set it to today
-            if (date > DateTime.Now) To = DateTime.Now.ToString("yyyy-MM-dd");
-        }
-
-        public override string ToString() => $"{Symbol} from {From} to {To}";
-    }
-
     private void Awake() => Instance = this;
 
     private void Start()
     {
         ui = FindObjectOfType<UIDocument>();
-        Balance = 1000;
-        StartCoroutine(Animation());
+        Balance = 10000;
+        stockElement = ui.rootVisualElement.Q<StockElement>();
+        StartCoroutine(UpdateStockElement());
 
-        // DateTime from = DateTime.Now.Subtract(TimeSpan.FromDays(365 * 2));
-        // DateTime to = from.AddMonths(2);
-        // StockData data = await GetStockData("AAPL", from.ToString("yyyy-MM-dd"), to.ToString("yyyy-MM-dd"));
-        // Debug.Log(data);
+        ui.rootVisualElement.Q<Button>("invest").clicked += Invest;
+        ui.rootVisualElement.Q<Button>("sell").clicked += Sell;
+        SerialInput.InputEvents["right"] += Invest;
+        SerialInput.InputEvents["left"] += Sell;
     }
 
     public static async Task<StockData> GetRandomStockData()
@@ -92,10 +66,36 @@ public class StockManager : MonoBehaviour
         return data;
     }
 
-    public IEnumerator Animation()
+    public IEnumerator UpdateStockElement()
     {
         yield return null;
-        ui.rootVisualElement.Q<StockElement>().RemoveFromClassList("offset");
+        stockElement.RemoveFromClassList("offset");
+
+        yield return new WaitForSeconds(stockElement.StartWaitTime / 1000f);
+
+        while (stockElement.currentStock < stockElement.Data.Stocks.Count)
+        {
+            yield return new WaitForSeconds(stockElement.TotalTime / stockElement.Data.Stocks.Count / 1000f);
+            currentCost = stockElement.Data.Stocks[stockElement.currentStock].Close;
+            stockElement.currentStock++;
+            stockElement.MarkDirtyRepaint();
+        }
+    }
+
+    private void Invest()
+    {
+        if (currentCost == 0) return;
+        if (Balance < currentCost) return;
+        Balance -= currentCost;
+        boughtStocks++;
+    }
+
+    private void Sell()
+    {
+        if (currentCost == 0) return;
+        if (boughtStocks < 1) return;
+        Balance += currentCost;
+        boughtStocks--;
     }
 
     /// <summary>
@@ -129,6 +129,36 @@ public class StockManager : MonoBehaviour
 
         string json = req.downloadHandler.text;
         return StockData.CreateFromJSON(json);
+    }
+
+    private class StockReference
+    {
+        public string Symbol;
+        public string From;
+        public string To;
+
+        public StockReference(string _symbol, string _from, string _to)
+        {
+            Symbol = _symbol;
+            From = _from;
+            To = _to;
+        }
+
+        public StockReference(string _symbol, string _from)
+        {
+            Symbol = _symbol;
+            From = _from;
+
+            // Add two months to the start date
+            DateTime date = DateTime.Parse(_from);
+            date = date.AddMonths(2);
+            To = date.ToString("yyyy-MM-dd");
+
+            // If the date is in the future, set it to today
+            if (date > DateTime.Now) To = DateTime.Now.ToString("yyyy-MM-dd");
+        }
+
+        public override string ToString() => $"{Symbol} from {From} to {To}";
     }
 
     public class StockData
