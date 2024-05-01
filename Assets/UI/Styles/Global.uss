@@ -10,6 +10,25 @@
     height: 100%;
 }
 
+.h1 {
+    color: white;
+    font-size: 72px;
+    margin-bottom: 24px;
+    -unity-font-style: bold;
+}
+
+.h2 {
+    color: white;
+    font-size: 48px;
+    margin-bottom: 24px;
+    -unity-font-style: bold;
+}
+
+Label {
+    color: white;
+    font-size: 32px;
+}
+
 Button {
     border-color: #fff;
     color: #000;
@@ -25,4 +44,38 @@ Button {
 Button:focus {
     border-width: 4px;
     color: #fff;
+}
+
+.btn-left {
+    background-color: #BA2C31;
+}
+
+.btn-right {
+    background-color: #07834C
+}
+
+.btn-left:hover {
+    background-color: #D63B41;
+}
+
+.btn-right:hover {
+    background-color: #0A9A5B;
+}
+
+#modal {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+#modal.show {
+    opacity: 1;
 }

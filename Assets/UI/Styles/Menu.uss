@@ -5,13 +5,16 @@
 .game-btn {
     flex-grow: 1;
     -unity-font-style: bold;
-    background-color: #fff;
+    background-color: rgb(255, 255, 255);
     font-size: 24px;
-    border-color: #000000;
-    border-width: 1px;
-    border-radius: 0px;
+    border-radius: 0;
+    color: rgb(255, 255, 255);
+    background-color: rgb(27, 29, 30);
+    border-color: rgb(24, 26, 27);
+    border-width: 0 4px;
     overflow: hidden;
     transition: all 0.5s ease-in-out;
+    -unity-background-scale-mode: scale-and-crop;
 }
 
 .game-btn:hover {

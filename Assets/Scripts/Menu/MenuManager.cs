@@ -17,7 +17,7 @@ public class MenuManager : MonoBehaviour
         Button gambling = ui.Q<Button>("gambling");
         Button betting = ui.Q<Button>("betting");
 
-        stock.clicked += () => Utils.ChangeScene("StockScene");
+        stock.clicked += () => SceneManager.LoadScene("StockScene");
         budget.clicked += () => { Debug.Log("Budget button clicked"); };
         gambling.clicked += () => { Debug.Log("Gambling button clicked"); };
         betting.clicked += () => { Debug.Log("Betting button clicked"); };

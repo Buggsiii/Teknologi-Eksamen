@@ -2,13 +2,22 @@
     <Style src="project://database/Assets/UI/Styles/Global.uss?fileID=7433441132597879392&amp;guid=630095698b1a1a14c98dcd4ad4b588e8&amp;type=3#Global" />
     <Style src="project://database/Assets/UI/Styles/Stocks.uss?fileID=7433441132597879392&amp;guid=d4aab868e97832f4b96710133789c0af&amp;type=3#Stocks" />
     <ui:VisualElement name="VisualElement" class="background">
-        <ui:VisualElement class="stock-con" style="flex-grow: 1;">
-            <StockElement Start-Wait-Time="600" Total-Time="58500" class="offset" style="scale: 2 1; transition-duration: 60s; transition-property: translate; transition-timing-function: linear;" />
+        <ui:VisualElement class="stock-wrapper" style="flex-grow: 1;">
+            <ui:VisualElement class="stock-con" style="flex-grow: 1; width: 200%;">
+                <StockElement Start-Wait-Time="1200" Total-Time="58500" class="offset" style="transition-duration: 60s; transition-property: translate; transition-timing-function: linear; flex-grow: 1;" />
+                <ui:VisualElement name="x-axis" style="height: 48px; flex-direction: row; width: 100%; position: absolute; bottom: 0;" />
+            </ui:VisualElement>
             <ui:Label tabindex="-1" text="10,000DKK" parse-escape-sequences="true" display-tooltip-when-elided="true" name="balance" class="balance" />
         </ui:VisualElement>
         <ui:VisualElement name="VisualElement" class="btn-con">
-            <ui:Button text="Sell" parse-escape-sequences="true" display-tooltip-when-elided="true" name="sell" class="btn-left" style="margin-right: 16px; margin-left: 0;" />
-            <ui:Button text="Invest" parse-escape-sequences="true" display-tooltip-when-elided="true" name="invest" class="btn-right" style="margin-right: 0;" />
+            <ui:Button text="Invest" parse-escape-sequences="true" display-tooltip-when-elided="true" name="invest" class="btn-left" style="margin-left: 0; margin-right: 16px;" />
+            <ui:Button text="Sell" parse-escape-sequences="true" display-tooltip-when-elided="true" name="sell" class="btn-right" style="margin-left: 16px;" />
         </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="modal" picking-mode="Ignore">
+        <ui:Label tabindex="-1" text="PROFIT" parse-escape-sequences="true" display-tooltip-when-elided="true" class="heading h1" />
+        <ui:Label tabindex="-1" text="-1,000DKK" parse-escape-sequences="true" display-tooltip-when-elided="true" name="profit" class="h2" />
+        <ui:Label tabindex="-1" text="PULL TO CONTINUE" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        <ui:Label tabindex="-1" text="PRESS ● FOR MENU" parse-escape-sequences="true" display-tooltip-when-elided="true" />
     </ui:VisualElement>
 </ui:UXML>

@@ -33,17 +33,7 @@ public class StockElement : VisualElement
     public StockManager.StockData Data { get; private set; }
     public int currentStock = 0;
 
-    public StockElement()
-    {
-        Initialization();
-        generateVisualContent += OnGenerateVisualContent;
-    }
-
-    public async void Initialization()
-    {
-        if (!Application.isPlaying) return;
-        await SetData();
-    }
+    public StockElement() => generateVisualContent += OnGenerateVisualContent;
 
     public async Task SetData()
     {
@@ -53,7 +43,6 @@ public class StockElement : VisualElement
         if (Data == null) return;
         Debug.Log(Data.ToString());
 
-        // Trigger a repaint
         MarkDirtyRepaint();
     }
 
@@ -78,9 +67,10 @@ public class StockElement : VisualElement
         }
 
         if (Data == null) return;
+
         // Draw the graph
         ctx.BeginPath();
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 8;
         for (int i = 0; i < Data.Stocks.Count; i++)
         {
             var stock = Data.Stocks[i];
@@ -94,7 +84,7 @@ public class StockElement : VisualElement
         }
         ctx.Stroke();
 
-        ctx.lineWidth = 8;
+        ctx.lineWidth = 16;
         for (int i = 0; i < Data.Stocks.Count; i++)
         {
             var stock = Data.Stocks[i];
@@ -104,8 +94,12 @@ public class StockElement : VisualElement
             float barBottom = height - ((stock.Lowest - Data.MinLowest) / (Data.MaxHighest - Data.MinLowest) * height);
 
             // Color based on comparison with previous day
-            if (i > 0) ctx.strokeColor = stock.Close > Data.Stocks[i - 1].Close ? new Color32(7, 131, 76, 255) : new Color32(186, 44, 49, 255);
-            else ctx.strokeColor = new Color32(186, 44, 49, 255);
+            var prevStock = i > 0 ? Data.Stocks[i - 1] : stock;
+
+            ctx.strokeColor =
+                stock.Close >= prevStock.Close ?
+                    new Color(0.03f, 0.51f, 0.3f) :
+                    new Color(0.73f, 0.17f, 0.19f);
 
             ctx.BeginPath();
             ctx.MoveTo(new Vector2(x, barBottom));

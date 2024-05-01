@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -220,19 +220,19 @@ MonoBehaviour:
   - Symbol: U
     From: 2023-12-27
     To: 2024-02-27
-    enabled: 0
+    enabled: 1
   - Symbol: TSLA
     From: 2023-12-27
     To: 2024-02-27
-    enabled: 0
+    enabled: 1
   - Symbol: AAPL
     From: 2024-01-23
     To: 2024-03-23
-    enabled: 0
+    enabled: 1
   - Symbol: CRSR
     From: 2024-02-05
     To: 2024-04-05
-    enabled: 0
+    enabled: 1
   - Symbol: TCEHY
     From: 2023-12-28
     To: 2024-02-28

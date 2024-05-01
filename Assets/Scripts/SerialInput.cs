@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class SerialInput : MonoBehaviour
 {
+    public static SerialInput Instance { get; private set; }
+
+    public static string COMPort = "COM4";
     public delegate void InputEvent();
     private static SerialPort serialPort;
     public static Dictionary<string, InputEvent> InputEvents = new()
@@ -14,6 +17,18 @@ public class SerialInput : MonoBehaviour
         { "right", () => Debug.Log("Right") },
         { "arm", () => Debug.Log("Arm")}
     };
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void Start() => Init();
 
@@ -38,8 +53,9 @@ public class SerialInput : MonoBehaviour
 
     public static void Init()
     {
-        if (!SerialPort.GetPortNames().Contains("COM3")) return;
-        serialPort = new SerialPort("COM3", 9600);
+        if (serialPort != null) return;
+        if (!SerialPort.GetPortNames().Contains(COMPort)) return;
+        serialPort = new SerialPort(COMPort, 9600);
         serialPort.Open();
 
         Debug.Log("Serial port opened");
@@ -48,6 +64,7 @@ public class SerialInput : MonoBehaviour
     private static string ReadSerial()
     {
         if (serialPort == null) return "";
+        if (!serialPort.IsOpen) return "";
         if (serialPort.BytesToRead == 0) return "";
         string input = serialPort.ReadLine().Trim();
         Debug.Log(input);

@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class StockManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class StockManager : MonoBehaviour
     private const string API = "aMmCh_fZV_wzh53J6Hw_MWqN04oaRwH9";
     private UIDocument ui;
     StockElement stockElement;
+    VisualElement modal;
     private float currentCost;
     private int boughtStocks = 0;
 
@@ -38,14 +40,14 @@ public class StockManager : MonoBehaviour
     private void Start()
     {
         ui = FindObjectOfType<UIDocument>();
-        Balance = 10000;
         stockElement = ui.rootVisualElement.Q<StockElement>();
-        StartCoroutine(UpdateStockElement());
+        modal = ui.rootVisualElement.Q<VisualElement>("modal");
+
+        Balance = 10000;
+        StartRound();
 
         ui.rootVisualElement.Q<Button>("invest").clicked += Invest;
         ui.rootVisualElement.Q<Button>("sell").clicked += Sell;
-        SerialInput.InputEvents["right"] += Invest;
-        SerialInput.InputEvents["left"] += Sell;
     }
 
     public static async Task<StockData> GetRandomStockData()
@@ -58,10 +60,86 @@ public class StockManager : MonoBehaviour
         return data;
     }
 
+    public IEnumerator StockElementAnimation()
+    {
+        float seconds = 60f;
+
+        float startTime = Time.time;
+        while (Time.time - startTime < seconds)
+        {
+            float t = (Time.time - startTime) / seconds;
+            float width = stockElement.contentRect.width;
+            stockElement.parent.style.left = Mathf.Lerp(0, -width * 1f, t);
+            yield return null;
+        }
+
+        SellAll();
+        float profit = Balance - 10000;
+        Label profitLabel = modal.Q<Label>("profit");
+        profitLabel.style.color = profit > 0 ? new Color(0.03f, 0.51f, 0.3f) : new Color(0.73f, 0.17f, 0.19f);
+        profitLabel.text = $"{profit:n0}DKK";
+        modal.AddToClassList("show");
+
+        SerialInput.InputEvents["left"] -= Invest;
+        SerialInput.InputEvents["right"] -= Sell;
+        SerialInput.InputEvents["arm"] += StartRound;
+        SerialInput.InputEvents["mid"] += ToMenu;
+    }
+
+    private async void StartRound()
+    {
+        SerialInput.InputEvents["arm"] -= StartRound;
+        stockElement.currentStock = 0;
+        await stockElement.SetData();
+        modal.RemoveFromClassList("show");
+        StartCoroutine(StockElementAnimation());
+        StartCoroutine(UpdateStockElement());
+        SerialInput.InputEvents["left"] += Invest;
+        SerialInput.InputEvents["right"] += Sell;
+    }
+
+    private void ToMenu()
+    {
+        StopAllCoroutines();
+
+        SerialInput.InputEvents["left"] -= Invest;
+        SerialInput.InputEvents["right"] -= Sell;
+        SerialInput.InputEvents["arm"] -= StartRound;
+        SerialInput.InputEvents["mid"] -= ToMenu;
+
+        SceneManager.LoadScene(0);
+    }
+
     public IEnumerator UpdateStockElement()
     {
+        VisualElement xAxis = ui.rootVisualElement.Q<VisualElement>("x-axis");
+        xAxis.style.marginLeft = xAxis.contentRect.width / (stockElement.Data.Stocks.Count + 1) * .5f;
+        xAxis.Clear();
+
+        for (int i = 0; i < stockElement.Data.Stocks.Count; i++)
+        {
+            Stock stock = stockElement.Data.Stocks[i];
+            Stock prevStock = i > 0 ? stockElement.Data.Stocks[i - 1] : stock;
+
+            bool isUp = stock.Close >= prevStock.Close;
+            Label label = new(stock.Close.ToString("n2"))
+            {
+                text = $"{stock.Date:dd/MM}\n{(isUp ? '▲' : '▼')}{stock.Close * 6.98f:n0}DKK",
+                style = { color =
+                    isUp ?
+                        new Color(0.03f, 0.51f, 0.3f) :
+                        new Color(0.73f, 0.17f, 0.19f)
+                }
+            };
+            label.style.width = xAxis.contentRect.width / (stockElement.Data.Stocks.Count + 1);
+
+            xAxis.Add(label);
+        }
+
         yield return null;
         stockElement.RemoveFromClassList("offset");
+
+        currentCost = stockElement.Data.Stocks[0].Close * 6.98f;
 
         yield return new WaitForSeconds(stockElement.StartWaitTime / 1000f);
 
@@ -89,6 +167,13 @@ public class StockManager : MonoBehaviour
         if (boughtStocks < 1) return;
         Balance += currentCost;
         boughtStocks--;
+    }
+
+    private void SellAll()
+    {
+        if (currentCost == 0) return;
+        Balance += currentCost * boughtStocks;
+        boughtStocks = 0;
     }
 
     /// <summary>
