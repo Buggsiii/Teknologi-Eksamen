@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -21,5 +19,16 @@ public class MenuManager : MonoBehaviour
         budget.clicked += () => { Debug.Log("Budget button clicked"); };
         gambling.clicked += () => { Debug.Log("Gambling button clicked"); };
         betting.clicked += () => { Debug.Log("Betting button clicked"); };
+
+        SerialInput.Init();
+        SerialInput.InputEvents["left"] += () => SwicthScene("StockScene");
+    }
+
+    private void SwicthScene(string _sceneName)
+    {
+        SceneManager.LoadScene(_sceneName);
+
+        // Clear left the input events
+        SerialInput.InputEvents["left"] = () => { };
     }
 }

@@ -2,9 +2,18 @@
     <Style src="project://database/Assets/UI/Styles/Global.uss?fileID=7433441132597879392&amp;guid=630095698b1a1a14c98dcd4ad4b588e8&amp;type=3#Global" />
     <Style src="project://database/Assets/UI/Styles/Menu.uss?fileID=7433441132597879392&amp;guid=8bdf9bb80f12bf74bb9bafdbf0624a55&amp;type=3#Menu" />
     <ui:VisualElement class="games-list" style="flex-grow: 1;">
-        <ui:Button text="STOCK STAKER" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stock" class="game-btn" style="background-image: url(&quot;project://database/Assets/Sprites/StockStaker.png?fileID=2800000&amp;guid=5f91b2d83829a6f4cb568b43a70decd0&amp;type=3#StockStaker&quot;);" />
-        <ui:Button text="BUDGET BALANCER" parse-escape-sequences="true" display-tooltip-when-elided="true" name="budget" class="game-btn" />
-        <ui:Button text="GAMBLING GURU" parse-escape-sequences="true" display-tooltip-when-elided="true" name="gambling" class="game-btn" />
-        <ui:Button text="BETTER BETTING" parse-escape-sequences="true" display-tooltip-when-elided="true" name="betting" class="game-btn" />
+        <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="stock" class="game-btn" style="background-image: url(&quot;project://database/Assets/Sprites/StockStaker.png?fileID=2800000&amp;guid=5f91b2d83829a6f4cb568b43a70decd0&amp;type=3#StockStaker&quot;);">
+            <ui:Label tabindex="-1" text="STOCK STAKER" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+            <ui:Label tabindex="-1" text="PRESS &lt;color=&quot;red&quot;&gt;●&lt;/color&gt; TO PLAY" parse-escape-sequences="true" display-tooltip-when-elided="true" style="font-size: 24px;" />
+        </ui:Button>
+        <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="budget" class="game-btn">
+            <ui:Label tabindex="-1" text="BUDGET BALANCER&#10;(COMING SOON)" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        </ui:Button>
+        <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="gambling" class="game-btn">
+            <ui:Label tabindex="-1" text="GAMBLING GURU&#10;(COMING SOON)" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        </ui:Button>
+        <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="betting" class="game-btn">
+            <ui:Label tabindex="-1" text="BETTER BETTING&#10;(COMING SOON)" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        </ui:Button>
     </ui:VisualElement>
 </ui:UXML>
